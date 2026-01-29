@@ -32,7 +32,8 @@ pub fn pagination_controls(props: &PaginationControlsProps) -> Html {
     };
 
     // Pre-compute page indicator to avoid multiple string allocations
-    let page_indicator_text = texts.page_indicator
+    let page_indicator_text = texts
+        .page_indicator
         .replace("{current}", &(page_val + 1).to_string())
         .replace("{total}", &total_pages.to_string());
 

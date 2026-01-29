@@ -90,7 +90,7 @@ pub fn Table(props: TableProps) -> Element {
 
     // Reset page to 0 when search query changes to prevent invalid page states
     use_effect(use_reactive!(|search_query| {
-        let _ = search_query;  // Explicitly depend on search_query
+        let _ = search_query; // Explicitly depend on search_query
         page.set(0);
     }));
 
@@ -156,7 +156,8 @@ pub fn Table(props: TableProps) -> Element {
     // Ensure page_size is at least 1 to prevent division by zero
     let page_size_safe = page_size.max(1);
     // Ensure at least 1 page to avoid confusing 'Page 1 of 0' message when empty
-    let total_pages = ((filtered_indices.len() as f64 / page_size_safe as f64).ceil() as usize).max(1);
+    let total_pages =
+        ((filtered_indices.len() as f64 / page_size_safe as f64).ceil() as usize).max(1);
 
     // Clamp current page to valid range to prevent showing empty results
     let current_page = page().min(total_pages.saturating_sub(1));

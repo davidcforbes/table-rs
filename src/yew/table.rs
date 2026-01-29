@@ -112,19 +112,18 @@ pub fn table(props: &TableProps) -> Html {
     let update_search_url = {
         let search_query = search_query.clone();
         Callback::from(move |query: String| {
-            let result = web_sys::window()
-                .and_then(|window| {
-                    let url = window.location().href().ok()?;
-                    let url_obj = web_sys::Url::new(&url).ok()?;
-                    let params = url_obj.search_params();
-                    params.set("search", &query);
-                    url_obj.set_search(&params.to_string().as_string().unwrap_or_default());
-                    window
-                        .history()
-                        .ok()?
-                        .replace_state_with_url(&JsValue::NULL, "", Some(&url_obj.href()))
-                        .ok()
-                });
+            let result = web_sys::window().and_then(|window| {
+                let url = window.location().href().ok()?;
+                let url_obj = web_sys::Url::new(&url).ok()?;
+                let params = url_obj.search_params();
+                params.set("search", &query);
+                url_obj.set_search(&params.to_string().as_string().unwrap_or_default());
+                window
+                    .history()
+                    .ok()?
+                    .replace_state_with_url(&JsValue::NULL, "", Some(&url_obj.href()))
+                    .ok()
+            });
 
             // Only update search_query if URL update succeeded or if we're not in a browser environment
             if result.is_some() || web_sys::window().is_none() {
@@ -194,7 +193,8 @@ pub fn table(props: &TableProps) -> Html {
     // Ensure page_size is at least 1 to prevent division by zero
     let page_size_safe = (*page_size).max(1);
     // Ensure at least 1 page to avoid confusing 'Page 1 of 0' message when empty
-    let total_pages = ((filtered_indices.len() as f64 / page_size_safe as f64).ceil() as usize).max(1);
+    let total_pages =
+        ((filtered_indices.len() as f64 / page_size_safe as f64).ceil() as usize).max(1);
 
     // Clamp current page to valid range to prevent showing empty results
     let current_page = (*page).min(total_pages.saturating_sub(1));
