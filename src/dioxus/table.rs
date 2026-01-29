@@ -139,18 +139,18 @@ pub fn Table(props: TableProps) -> Element {
         (0..data.len()).collect()
     };
 
-    if let Some(col_id) = sort_column() {
-        if let Some(col) = columns.iter().find(|c| c.id == col_id) {
-            let val = "".to_string();
-            filtered_indices.sort_by(|&a, &b| {
-                let a_val = data[a].get(col.id).unwrap_or(&val);
-                let b_val = data[b].get(col.id).unwrap_or(&val);
-                match sort_order() {
-                    SortOrder::Asc => a_val.cmp(b_val),
-                    SortOrder::Desc => b_val.cmp(a_val),
-                }
-            });
-        }
+    if let Some(col_id) = sort_column()
+        && let Some(col) = columns.iter().find(|c| c.id == col_id)
+    {
+        let val = "".to_string();
+        filtered_indices.sort_by(|&a, &b| {
+            let a_val = data[a].get(col.id).unwrap_or(&val);
+            let b_val = data[b].get(col.id).unwrap_or(&val);
+            match sort_order() {
+                SortOrder::Asc => a_val.cmp(b_val),
+                SortOrder::Desc => b_val.cmp(a_val),
+            }
+        });
     }
 
     // Ensure page_size is at least 1 to prevent division by zero
