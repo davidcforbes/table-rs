@@ -49,7 +49,13 @@ pub fn example1() -> Html {
         },
     ];
 
-    html! { <Table data={data} columns={columns} /> }
+    // First example demonstrates the motion system end-to-end:
+    // `TableClasses::with_motion()` opts pagination buttons, the search
+    // input, and rows into the `trs-*` classes that the `MotionPreamble`
+    // mounted in `App` defines. The rest of the examples below stay on
+    // `TableClasses::default()` (or fully-custom classes) so the motion
+    // API surface is a pure addition.
+    html! { <Table data={data} columns={columns} classes={TableClasses::with_motion()} /> }
 }
 
 #[function_component(Example2)]

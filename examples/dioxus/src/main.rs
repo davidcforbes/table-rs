@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
 use maplit::hashmap;
+use table_rs::dioxus::motion::MotionPreamble;
 use table_rs::dioxus::table::Table;
 use table_rs::dioxus::types::{Column, TableClasses, TableTexts};
 
@@ -19,6 +20,7 @@ fn app() -> Element {
         document::Stylesheet { href: "https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" },
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
+        MotionPreamble {}
         Examples {}
     }
 }
@@ -469,8 +471,13 @@ fn Example1() -> Element {
         },
     ];
 
+    // First example demonstrates the motion system end-to-end:
+    // `TableClasses::with_motion()` opts pagination buttons, the search
+    // input, and rows into the `trs-*` classes that the `MotionPreamble`
+    // mounted in `app` defines. Other examples below stay on default
+    // classes so the motion API surface is purely additive.
     rsx! {
-        Table { data: data, columns: columns }
+        Table { data: data, columns: columns, classes: TableClasses::with_motion() }
     }
 }
 
