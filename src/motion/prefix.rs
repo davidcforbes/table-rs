@@ -27,3 +27,13 @@ pub const CLASS_RIPPLE_HOST: &str = "trs-ripple-host";
 
 /// Click-radiating ripple element. See [`CLASS_RIPPLE_HOST`].
 pub const CLASS_RIPPLE_ELEMENT: &str = "trs-ripple-element";
+
+/// Sort-direction indicator next to a sortable column header. Use as a
+/// sibling `<span class="trs-sort-arrow" data-direction="asc|desc|none">`
+/// inside the `<th>` — the `data-direction` attribute drives the rotation.
+pub const CLASS_SORT_ARROW: &str = "trs-sort-arrow";
+
+/// Fades the element in over `DURATION_SLOW_MS`. Used by loading-row and
+/// empty-row placeholders, which natively unmount/remount when their
+/// state changes.
+pub const CLASS_FADE_IN: &str = "trs-fade-in";

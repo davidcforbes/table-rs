@@ -136,6 +136,8 @@ impl TableClasses {
             pagination_button: "pagination-button trs-eased trs-pressable trs-focus-ring",
             search_input: "search-input trs-eased trs-focus-ring",
             row: "tr trs-eased",
+            loading_row: "loading-row trs-fade-in",
+            empty_row: "empty-row trs-fade-in",
             ..Self::default()
         }
     }

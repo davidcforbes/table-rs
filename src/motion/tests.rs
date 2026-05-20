@@ -138,6 +138,25 @@ fn animations_css_references_token_variables() {
     assert!(css.contains("var(--trs-elevation-8)"));
 }
 
+#[test]
+fn animations_css_defines_sort_arrow_with_directional_states() {
+    let css = animations_css();
+    assert!(css.contains(".trs-sort-arrow"));
+    // The two directional states must rotate to opposite orientations.
+    assert!(css.contains(".trs-sort-arrow[data-direction='asc']"));
+    assert!(css.contains(".trs-sort-arrow[data-direction='desc']"));
+    assert!(css.contains("rotate(180deg)"));
+}
+
+#[test]
+fn animations_css_defines_fade_in_keyframes_and_class() {
+    let css = animations_css();
+    assert!(css.contains("@keyframes trs-fade-in"));
+    assert!(css.contains(".trs-fade-in"));
+    // Fade duration is the slow tier, per Slice 2 spec.
+    assert!(css.contains("animation: trs-fade-in var(--trs-duration-slow)"));
+}
+
 // Cross-crate drift detection (asserting these inline consts match the
 // canonical `ui-tokens` crate) is deferred to follow-up bead `table-rs-614`.
 // Reason: `ui-tokens` is not on crates.io, and an optional path-dep would

@@ -70,6 +70,23 @@ pub fn header(props: &TableHeaderProps) -> Html {
                         Some(Callback::from(move |_| on_sort_column.emit(col_id)))
                     } else { None };
 
+                    // Sort-arrow drives the `trs-sort-arrow` motion class
+                    // off `data-direction`. Always rendered for sortable
+                    // columns; without the motion preamble the class is
+                    // inert and the arrow stays static.
+                    let arrow_direction = if col.sortable {
+                        if Some(col.id) == **sort_column {
+                            match **sort_order {
+                                SortOrder::Asc => "asc",
+                                SortOrder::Desc => "desc",
+                            }
+                        } else {
+                            "none"
+                        }
+                    } else {
+                        ""
+                    };
+
                     html! {
                         <th
                             {onclick}
@@ -88,6 +105,9 @@ pub fn header(props: &TableHeaderProps) -> Html {
                             }
                         >
                             { col.header }
+                            if col.sortable {
+                                <span class="trs-sort-arrow" data-direction={arrow_direction} aria-hidden="true">{ "▲" }</span>
+                            }
                         </th>
                     }
                 }) }

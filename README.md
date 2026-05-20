@@ -67,8 +67,12 @@ The `crate::motion` module exposes a Fluent 2-inspired set of CSS primitives
    elements: a `:root { --trs-* }` token block and a class-definition
    block.
 2. Pass `TableClasses::with_motion()` instead of `TableClasses::default()`
-   to the `Table`. Pagination buttons, the search input, and rows pick up
-   the eased + pressable + focus-ring behavior.
+   to the `Table`. Pagination buttons, the search input, rows, loading
+   and empty placeholders pick up the eased + pressable + focus-ring +
+   fade-in behavior. Sortable column headers also gain a `▲` indicator
+   that rotates 180° between asc and desc (always rendered for sortable
+   columns; the rotation lights up only when the motion preamble is
+   present).
 
 Existing consumers see no visual change without both steps; the motion API
 surface is purely additive. See `examples/yew` and `examples/dioxus` for

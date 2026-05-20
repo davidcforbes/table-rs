@@ -86,9 +86,35 @@ pub fn animations_css() -> &'static str {
     to   { outline-color: currentColor; }
 }
 
+.trs-sort-arrow {
+    display: inline-block;
+    margin-left: 0.35em;
+    transition: transform var(--trs-duration-normal) var(--trs-ease-standard),
+                opacity   var(--trs-duration-fast)   var(--trs-ease-standard);
+    transform: rotate(0deg);
+    opacity: 0.4;
+}
+.trs-sort-arrow[data-direction='asc'] {
+    transform: rotate(0deg);
+    opacity: 1;
+}
+.trs-sort-arrow[data-direction='desc'] {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+@keyframes trs-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.trs-fade-in {
+    animation: trs-fade-in var(--trs-duration-slow) var(--trs-ease-decelerate);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .trs-eased,
-    .trs-elevated {
+    .trs-elevated,
+    .trs-sort-arrow {
         transition: none;
     }
     .trs-pressable:active:not(:disabled):not([aria-disabled='true']),
@@ -96,7 +122,8 @@ pub fn animations_css() -> &'static str {
         transform: none;
     }
     .trs-ripple-element,
-    .trs-focus-ring:focus-visible {
+    .trs-focus-ring:focus-visible,
+    .trs-fade-in {
         animation: none;
     }
 }
