@@ -45,10 +45,10 @@ pub const EASINGS: &[(&str, f32, f32, f32, f32)] = &[
 
 /// All five elevation tiers in ascending order.
 pub const ELEVATIONS: &[(&str, f32, f32, f32, f32)] = &[
-    ("2", 0.0, 1.0, 2.0, 0.10),  // Subtle outline used on resting controls.
-    ("4", 0.0, 2.0, 4.0, 0.14),  // Card resting elevation.
-    ("8", 0.0, 4.0, 8.0, 0.16),  // Hovered card / popover.
-    ("16", 0.0, 8.0, 16.0, 0.18), // Dialog / modal.
+    ("2", 0.0, 1.0, 2.0, 0.10),    // Subtle outline used on resting controls.
+    ("4", 0.0, 2.0, 4.0, 0.14),    // Card resting elevation.
+    ("8", 0.0, 4.0, 8.0, 0.16),    // Hovered card / popover.
+    ("16", 0.0, 8.0, 16.0, 0.18),  // Dialog / modal.
     ("64", 0.0, 32.0, 64.0, 0.22), // Top-most overlay.
 ];
 
@@ -67,18 +67,12 @@ pub fn tokens_css() -> String {
     let mut css = String::with_capacity(1024);
     css.push_str(":root {\n");
 
-    css.push_str(&format!(
-        "  --trs-duration-fast: {}ms;\n",
-        DURATION_FAST_MS
-    ));
+    css.push_str(&format!("  --trs-duration-fast: {}ms;\n", DURATION_FAST_MS));
     css.push_str(&format!(
         "  --trs-duration-normal: {}ms;\n",
         DURATION_NORMAL_MS
     ));
-    css.push_str(&format!(
-        "  --trs-duration-slow: {}ms;\n",
-        DURATION_SLOW_MS
-    ));
+    css.push_str(&format!("  --trs-duration-slow: {}ms;\n", DURATION_SLOW_MS));
 
     for (name, x1, y1, x2, y2) in EASINGS {
         css.push_str(&format!(

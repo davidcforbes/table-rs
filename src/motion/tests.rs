@@ -23,7 +23,10 @@ fn durations_are_strictly_ascending() {
 #[test]
 fn easings_named_in_canonical_order() {
     let names: Vec<&str> = EASINGS.iter().map(|(n, ..)| *n).collect();
-    assert_eq!(names, vec!["linear", "standard", "decelerate", "accelerate"]);
+    assert_eq!(
+        names,
+        vec!["linear", "standard", "decelerate", "accelerate"]
+    );
 }
 
 #[test]
@@ -158,9 +161,9 @@ fn animations_css_defines_fade_in_keyframes_and_class() {
 }
 
 // Cross-crate drift detection (asserting these inline consts match the
-// canonical `ui-tokens` crate) is deferred to follow-up bead `table-rs-614`.
-// Reason: `ui-tokens` is not on crates.io, and an optional path-dep would
-// break `cargo publish` even when behind a feature flag. The `tokens-pin`
-// feature in `Cargo.toml` is reserved for that wiring; today the duration
-// pin tests above (`duration_constants_pin_canonical_values`) catch the
-// most likely drift target.
+// canonical `ui-tokens` crate) lives in `tests/tokens_drift.rs`, gated on
+// the `UI_TOKENS_SRC` env var so it reads the sibling crate from disk
+// without a Cargo dependency (which would break `cargo publish`, since
+// `ui-tokens` is not on crates.io). The duration-pin tests above
+// (`duration_constants_pin_canonical_values`) additionally catch the most
+// likely drift target on every `cargo test`.
