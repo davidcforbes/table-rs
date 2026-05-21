@@ -3,6 +3,7 @@
 
 use leptos::prelude::*;
 
+use crate::leptos::ripple::{RippleOverlay, use_ripple};
 use crate::leptos::types::{Column, SortOrder, TableClasses};
 
 /// Renders the `<thead>` row. Clicking a sortable header invokes
@@ -31,6 +32,12 @@ pub fn TableHeader(
                         let style = col.style.unwrap_or_default();
                         let cell_class =
                             format!("{} {}", header_cell, col.class.unwrap_or("")).trim().to_string();
+
+                        // Ripple is active only on sortable headers that are
+                        // `trs-ripple-host` (i.e. motion opted in via
+                        // `with_motion`). See the controls module for rationale.
+                        let ripple_on = sortable && cell_class.contains("trs-ripple-host");
+                        let ripple = use_ripple();
 
                         let aria_sort = move || {
                             if sort_column.get() == Some(col_id) {
@@ -61,7 +68,10 @@ pub fn TableHeader(
                                 role="columnheader"
                                 style=style
                                 aria-sort=aria_sort
-                                on:click=move |_| {
+                                on:click=move |ev| {
+                                    if ripple_on {
+                                        ripple.trigger.run(ev);
+                                    }
                                     if sortable {
                                         on_sort.run(col_id);
                                     }
@@ -81,6 +91,7 @@ pub fn TableHeader(
                                         }
                                     })
                                 }}
+                                <RippleOverlay handle=ripple />
                             </th>
                         }
                     })

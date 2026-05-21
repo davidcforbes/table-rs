@@ -13,10 +13,12 @@
 
 pub mod filter;
 pub mod paginate;
+pub mod ripple;
 pub mod sort;
 
 pub use filter::filter_indices;
 pub use paginate::{Page, paginate};
+pub use ripple::{RippleInstance, dismiss_instance, push_instance};
 pub use sort::{SortOrder, sort_indices, toggle_sort};
 
 #[cfg(test)]

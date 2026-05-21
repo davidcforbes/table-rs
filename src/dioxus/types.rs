@@ -149,11 +149,12 @@ impl TableClasses {
     ///   own CSS; the motion class only smooths the change).
     pub fn with_motion() -> Self {
         Self {
-            pagination_button: "pagination-button trs-eased trs-pressable trs-focus-ring",
+            pagination_button: "pagination-button trs-eased trs-pressable trs-focus-ring trs-ripple-host",
             search_input: "search-input trs-eased trs-focus-ring",
             row: "tr trs-eased",
             loading_row: "loading-row trs-fade-in",
             empty_row: "empty-row trs-fade-in",
+            header_cell: "th trs-ripple-host",
             ..Self::default()
         }
     }

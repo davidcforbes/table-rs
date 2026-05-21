@@ -1,3 +1,4 @@
+use crate::dioxus::ripple::use_ripple;
 use crate::dioxus::types::Column;
 use crate::dioxus::types::SortOrder;
 use crate::dioxus::types::TableClasses;
@@ -90,35 +91,20 @@ pub fn TableHeader(
         } else {
             ""
         };
-        let sortable = col.sortable;
 
         let class = format!("{} {}", classes.header_cell, col.class.unwrap_or_default());
-        let style = col.style.unwrap_or_default();
-        let header = col.header;
-
-        let onclick = if col.sortable {
-            Callback::new(move |_| on_sort_column.call(col_id))
-        } else {
-            Callback::new(|_| {})
-        };
 
         rsx! {
-            th {
+            HeaderCell {
                 key: "{col_id}",
-                role: "columnheader",
-                class: "{class}",
-                style: "{style}",
-                aria_sort: "{aria_sort}",
-                onclick: onclick,
-                "{header}"
-                if sortable {
-                    span {
-                        class: "trs-sort-arrow",
-                        "data-direction": "{arrow_direction}",
-                        aria_hidden: "true",
-                        "▲"
-                    }
-                }
+                col_id,
+                header: col.header,
+                sortable: col.sortable,
+                cell_class: class,
+                style: col.style.unwrap_or_default(),
+                arrow_direction,
+                aria_sort,
+                on_sort_column,
             }
         }
     });
@@ -128,6 +114,55 @@ pub fn TableHeader(
             tr { class: "{classes.row}", role: "row",
                 {header_cells}
             }
+        }
+    }
+}
+
+/// A single `<th>`. Owns its own ripple so each header cell radiates
+/// independently — extracted into a component because Dioxus hooks
+/// (`use_ripple`) can't be called inside the column-mapping loop.
+#[component]
+fn HeaderCell(
+    col_id: &'static str,
+    header: &'static str,
+    sortable: bool,
+    cell_class: String,
+    style: &'static str,
+    arrow_direction: &'static str,
+    aria_sort: &'static str,
+    on_sort_column: EventHandler<&'static str>,
+) -> Element {
+    let ripple = use_ripple();
+    // Ripple active only on sortable headers opted into motion
+    // (`trs-ripple-host` added by `TableClasses::with_motion`).
+    let ripple_on = sortable && cell_class.contains("trs-ripple-host");
+
+    let onclick = move |e: Event<MouseData>| {
+        if ripple_on {
+            ripple.trigger(&e);
+        }
+        if sortable {
+            on_sort_column.call(col_id);
+        }
+    };
+
+    rsx! {
+        th {
+            role: "columnheader",
+            class: "{cell_class}",
+            style: "{style}",
+            aria_sort: "{aria_sort}",
+            onclick,
+            "{header}"
+            if sortable {
+                span {
+                    class: "trs-sort-arrow",
+                    "data-direction": "{arrow_direction}",
+                    aria_hidden: "true",
+                    "▲"
+                }
+            }
+            {ripple.overlay()}
         }
     }
 }
