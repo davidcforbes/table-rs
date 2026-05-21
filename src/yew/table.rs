@@ -3,6 +3,7 @@ use web_sys::UrlSearchParams;
 use web_sys::wasm_bindgen::JsValue;
 use yew::prelude::*;
 
+use crate::core;
 use crate::yew::body::TableBody;
 use crate::yew::controls::PaginationControls;
 use crate::yew::header::TableHeader;
@@ -159,48 +160,18 @@ pub fn table(props: &TableProps) -> Html {
         })
     };
 
-    // Work with indices instead of cloning data to reduce memory allocations
-    let mut filtered_indices: Vec<usize> = if !search_query.is_empty() {
-        data.iter()
-            .enumerate()
-            .filter(|(_, row)| {
-                columns.iter().any(|col| {
-                    row.get(col.id)
-                        .map(|v| v.to_lowercase().contains(&search_query.to_lowercase()))
-                        .unwrap_or(false)
-                })
-            })
-            .map(|(idx, _)| idx)
-            .collect()
-    } else {
-        (0..data.len()).collect()
-    };
+    // Filter → sort → paginate, all via the framework-agnostic core.
+    // Work with indices instead of cloning data to reduce allocations.
+    let column_ids: Vec<&'static str> = columns.iter().map(|c| c.id).collect();
+    let mut filtered_indices = core::filter_indices(data, &column_ids, &search_query);
 
-    if let Some(col_id) = *sort_column
-        && let Some(col) = columns.iter().find(|c| c.id == col_id)
-    {
-        let val = "".to_string();
-        filtered_indices.sort_by(|&a, &b| {
-            let a_val = data[a].get(col.id).unwrap_or(&val);
-            let b_val = data[b].get(col.id).unwrap_or(&val);
-            match *sort_order {
-                SortOrder::Asc => a_val.cmp(b_val),
-                SortOrder::Desc => b_val.cmp(a_val),
-            }
-        });
+    if let Some(col_id) = *sort_column {
+        core::sort_indices(&mut filtered_indices, data, col_id, *sort_order);
     }
 
-    // Ensure page_size is at least 1 to prevent division by zero
-    let page_size_safe = (*page_size).max(1);
-    // Ensure at least 1 page to avoid confusing 'Page 1 of 0' message when empty
-    let total_pages =
-        ((filtered_indices.len() as f64 / page_size_safe as f64).ceil() as usize).max(1);
-
-    // Clamp current page to valid range to prevent showing empty results
-    let current_page = (*page).min(total_pages.saturating_sub(1));
-    let start = current_page * page_size_safe;
-    let end = ((current_page + 1) * page_size_safe).min(filtered_indices.len());
-    let page_rows: Vec<_> = filtered_indices[start..end]
+    let page_window = core::paginate(filtered_indices.len(), *page_size, *page);
+    let total_pages = page_window.total_pages;
+    let page_rows: Vec<_> = filtered_indices[page_window.start..page_window.end]
         .iter()
         .map(|&idx| data[idx].clone())
         .collect();
@@ -209,15 +180,9 @@ pub fn table(props: &TableProps) -> Html {
         let sort_column = sort_column.clone();
         let sort_order = sort_order.clone();
         Callback::from(move |id: &'static str| {
-            if Some(id) == *sort_column {
-                sort_order.set(match *sort_order {
-                    SortOrder::Asc => SortOrder::Desc,
-                    SortOrder::Desc => SortOrder::Asc,
-                });
-            } else {
-                sort_column.set(Some(id));
-                sort_order.set(SortOrder::Asc);
-            }
+            let (next_col, next_order) = core::toggle_sort(*sort_column, *sort_order, id);
+            sort_column.set(next_col);
+            sort_order.set(next_order);
         })
     };
 
