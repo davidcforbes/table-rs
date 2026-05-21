@@ -17,7 +17,10 @@ fn normalize(s: &str) -> String {
 
 #[test]
 fn css_blocks_have_balanced_braces() {
-    for css in [&normalize(&tokens_css())[..], &normalize(animations_css())[..]] {
+    for css in [
+        &normalize(&tokens_css())[..],
+        &normalize(animations_css())[..],
+    ] {
         let opens = css.matches('{').count();
         let closes = css.matches('}').count();
         assert_eq!(
@@ -30,7 +33,10 @@ fn css_blocks_have_balanced_braces() {
 
 #[test]
 fn css_blocks_have_no_html_unsafe_characters() {
-    for css in [&normalize(&tokens_css())[..], &normalize(animations_css())[..]] {
+    for css in [
+        &normalize(&tokens_css())[..],
+        &normalize(animations_css())[..],
+    ] {
         // The strings will be embedded inside a `<style>` element. A `<`,
         // `>`, or `&` would let an attacker (or accidental refactor)
         // terminate the style block early or trigger HTML entity parsing.

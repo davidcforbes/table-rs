@@ -26,13 +26,10 @@ yew = ["dep:yew", "gloo-timers"]
 dio = ["dioxus"]
 lep = ["leptos"]
 
-# Reserved for drift-detection of inline motion constants in `src/motion/tokens.rs`
-# against the canonical `ui-tokens` crate in the sibling Rust-DeskApp workspace.
-# Wiring the actual dep is deferred (see follow-up bead `table-rs-614`) because
-# `ui-tokens` is not on crates.io and an optional path-dep would break
-# `cargo publish`. Today this flag is a no-op marker so build scripts and CI
-# commands that include it stay forward-compatible.
-tokens-pin = []
+# Drift between the inline motion constants in `src/motion/tokens.rs` and the
+# canonical `ui-tokens` crate is detected by `tests/tokens_drift.rs`, gated on
+# the `UI_TOKENS_SRC` env var (no Cargo dependency, no `cargo publish` impact).
+# See that test and `.github/workflows/ci.yml`.
 
 [profile.release]
 opt-level = "z"

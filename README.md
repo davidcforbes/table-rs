@@ -101,6 +101,25 @@ Existing consumers see no visual change without both steps; the motion API
 surface is purely additive. See `examples/yew` and `examples/dioxus` for
 end-to-end setups.
 
+## 🔧 Development
+
+CI runs `cargo fmt --check`, `cargo test --no-default-features`, and a
+per-framework `cargo build` + `cargo clippy` against `wasm32-unknown-unknown`
+for the `yew`, `dio`, and `lep` features.
+
+The motion constants in `src/motion/tokens.rs` are inlined copies of the
+canonical `ui-tokens` crate (which is not on crates.io, so it can't be a
+dependency without breaking `cargo publish`). To verify they haven't drifted,
+point the drift test at a local `ui-tokens` checkout:
+
+```sh
+UI_TOKENS_SRC=../Rust-DeskApp/crates/ui-tokens/src cargo test --test tokens_drift
+```
+
+Without `UI_TOKENS_SRC` set the test skips, so a plain `cargo test` is
+unaffected. To run the check in CI, set the repository variable
+`ENABLE_DRIFT_CHECK=true` and the `RUST_DESKAPP_TOKEN` secret.
+
 ## 🤝 Contributions
 
 Contributions are welcome! Whether it's bug fixes, feature requests, or examples, we would love your help to make **Table RS** even better.

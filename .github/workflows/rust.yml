@@ -10,12 +10,55 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  check:
+    name: fmt + test
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Format
+        run: cargo fmt --check
+      - name: Test (framework-agnostic core + motion)
+        run: cargo test --no-default-features
+
+  wasm:
+    name: build + clippy (${{ matrix.feature }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        feature: [yew, dio, lep]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: clippy
       - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --all-features
+        run: cargo build --target wasm32-unknown-unknown --features ${{ matrix.feature }}
+      - name: Clippy
+        run: cargo clippy --target wasm32-unknown-unknown --features ${{ matrix.feature }} -- -D warnings
+
+  # Verifies the inline motion constants in src/motion/tokens.rs still match
+  # the canonical ui-tokens crate. Disabled by default because it checks out
+  # the (private) Rust-DeskApp repo — enable by setting the repository
+  # variable ENABLE_DRIFT_CHECK=true and the secret RUST_DESKAPP_TOKEN.
+  drift:
+    name: tokens drift
+    if: ${{ vars.ENABLE_DRIFT_CHECK == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out ui-tokens source
+        uses: actions/checkout@v4
+        with:
+          repository: davidcforbes/Rust-DeskApp
+          path: rust-deskapp
+          token: ${{ secrets.RUST_DESKAPP_TOKEN }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Drift check
+        env:
+          UI_TOKENS_SRC: rust-deskapp/crates/ui-tokens/src
+        run: cargo test --test tokens_drift

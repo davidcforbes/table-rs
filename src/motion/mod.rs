@@ -45,7 +45,7 @@ pub mod tokens;
 pub use animations::animations_css;
 pub use prefix::*;
 pub use tokens::{
-    tokens_css, DURATION_FAST_MS, DURATION_NORMAL_MS, DURATION_SLOW_MS, EASINGS, ELEVATIONS,
+    DURATION_FAST_MS, DURATION_NORMAL_MS, DURATION_SLOW_MS, EASINGS, ELEVATIONS, tokens_css,
 };
 
 #[cfg(test)]
