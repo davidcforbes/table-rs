@@ -5,6 +5,12 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("../README.md")]
 
+/// Framework-agnostic table logic (sort / filter / paginate).
+///
+/// Always compiled; the Yew, Dioxus, and Leptos backends are thin
+/// wrappers over these pure functions.
+pub mod core;
+
 /// Framework-agnostic motion + elevation primitives.
 ///
 /// Always compiled; pair with the framework-specific `MotionPreamble`

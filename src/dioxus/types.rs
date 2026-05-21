@@ -196,11 +196,7 @@ pub struct TableProps {
 }
 
 /// Sort direction (ascending or descending).
-#[derive(PartialEq, Clone, Copy, Default)]
-pub enum SortOrder {
-    /// Ascending (default).
-    #[default]
-    Asc,
-    /// Descending.
-    Desc,
-}
+///
+/// Re-exported from the framework-agnostic [`crate::core`] so the
+/// sort logic has a single definition shared across backends.
+pub use crate::core::SortOrder;

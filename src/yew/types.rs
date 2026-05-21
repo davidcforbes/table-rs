@@ -34,15 +34,10 @@ pub struct Column {
 }
 
 /// Sort direction for a column: ascending or descending.
-#[derive(Clone, PartialEq, Default)]
-pub enum SortOrder {
-    /// Ascending order (default).
-    #[default]
-    Asc,
-
-    /// Descending order.
-    Desc,
-}
+///
+/// Re-exported from the framework-agnostic [`crate::core`] so the
+/// sort logic has a single definition shared across backends.
+pub use crate::core::SortOrder;
 
 /// Class names used to style various parts of the table.
 #[derive(Properties, PartialEq, Clone)]
