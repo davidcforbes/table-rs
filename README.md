@@ -49,10 +49,33 @@ Refer to [our guide](https://github.com/opensass/table-rs/blob/main/YEW.md) to i
 <!-- absolute url for docs.rs cause DIOXUS.md is not included in crate -->
 Refer to [our guide](https://github.com/opensass/table-rs/blob/main/DIOXUS.md) to integrate this component into your Dioxus app.
 
-## 🌱 Leptos Usage (TODO)
+## 🌱 Leptos Usage
 
-<!-- absolute url for docs.rs cause LEPTOS.md is not included in crate -->
-Refer to [our guide](https://github.com/opensass/table-rs/blob/main/LEPTOS.md) to integrate this component into your Leptos app.
+The `lep` feature ships a full `Table` component (`table_rs::leptos::table::Table`)
+with search, sorting, and pagination — sharing the same framework-agnostic
+core as the Yew and Dioxus backends. Pass the same `data: Vec<HashMap<&'static str, String>>`
+and `columns: Vec<Column>` you would for the other frameworks:
+
+```rust,ignore
+use leptos::prelude::*;
+use table_rs::leptos::table::Table;
+use table_rs::leptos::types::{Column, TableClasses};
+
+#[component]
+fn App() -> impl IntoView {
+    let columns = vec![
+        Column { id: "name", header: "Name", sortable: true, ..Default::default() },
+        Column { id: "email", header: "Email", ..Default::default() },
+    ];
+    let data = vec![/* HashMap rows keyed by column id */];
+    view! {
+        <Table data=data columns=columns page_size=10 paginate=true search=true />
+    }
+}
+```
+
+Opt into motion with `classes=TableClasses::with_motion()` and mount
+`table_rs::leptos::motion::MotionPreamble` once at the app root.
 
 ## ✨ Optional motion system
 
