@@ -54,6 +54,30 @@ Refer to [our guide](https://github.com/opensass/table-rs/blob/main/DIOXUS.md) t
 <!-- absolute url for docs.rs cause LEPTOS.md is not included in crate -->
 Refer to [our guide](https://github.com/opensass/table-rs/blob/main/LEPTOS.md) to integrate this component into your Leptos app.
 
+## ✨ Optional motion system
+
+The `crate::motion` module exposes a Fluent 2-inspired set of CSS primitives
+(eased state transitions, press depression, animated focus rings, and a
+`prefers-reduced-motion` guard). Opting in is two steps:
+
+1. Mount `MotionPreamble` once at app root — the framework-specific
+   component is at `table_rs::yew::motion::MotionPreamble`,
+   `table_rs::dioxus::motion::MotionPreamble`, or
+   `table_rs::leptos::motion::MotionPreamble`. It emits two `<style>`
+   elements: a `:root { --trs-* }` token block and a class-definition
+   block.
+2. Pass `TableClasses::with_motion()` instead of `TableClasses::default()`
+   to the `Table`. Pagination buttons, the search input, rows, loading
+   and empty placeholders pick up the eased + pressable + focus-ring +
+   fade-in behavior. Sortable column headers also gain a `▲` indicator
+   that rotates 180° between asc and desc (always rendered for sortable
+   columns; the rotation lights up only when the motion preamble is
+   present).
+
+Existing consumers see no visual change without both steps; the motion API
+surface is purely additive. See `examples/yew` and `examples/dioxus` for
+end-to-end setups.
+
 ## 🤝 Contributions
 
 Contributions are welcome! Whether it's bug fixes, feature requests, or examples, we would love your help to make **Table RS** even better.

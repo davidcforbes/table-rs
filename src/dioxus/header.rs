@@ -74,6 +74,23 @@ pub fn TableHeader(
         } else {
             "none"
         };
+        // Sort-arrow drives the `trs-sort-arrow` motion class off
+        // `data-direction`. Always rendered for sortable columns; without
+        // the motion preamble the class is inert and the arrow stays
+        // static.
+        let arrow_direction = if col.sortable {
+            if is_sorted {
+                match sort_order() {
+                    SortOrder::Asc => "asc",
+                    SortOrder::Desc => "desc",
+                }
+            } else {
+                "none"
+            }
+        } else {
+            ""
+        };
+        let sortable = col.sortable;
 
         let class = format!("{} {}", classes.header_cell, col.class.unwrap_or_default());
         let style = col.style.unwrap_or_default();
@@ -94,6 +111,14 @@ pub fn TableHeader(
                 aria_sort: "{aria_sort}",
                 onclick: onclick,
                 "{header}"
+                if sortable {
+                    span {
+                        class: "trs-sort-arrow",
+                        "data-direction": "{arrow_direction}",
+                        aria_hidden: "true",
+                        "▲"
+                    }
+                }
             }
         }
     });

@@ -131,6 +131,34 @@ impl Default for TableClasses {
     }
 }
 
+impl TableClasses {
+    /// `TableClasses` variant that opts the table into the motion system.
+    ///
+    /// Combines the default base classes with the `trs-*` motion classes
+    /// defined in [`crate::motion`]. For the classes to have any visible
+    /// effect, mount [`crate::dioxus::motion::MotionPreamble`] once at app
+    /// root so the underlying `<style>` blocks are present in the DOM.
+    ///
+    /// Surfaces wired in this constructor (Slice 1):
+    ///
+    /// - **pagination buttons** — eased state transitions, depression on
+    ///   press, animated keyboard focus ring.
+    /// - **search input** — eased state transitions, animated focus ring.
+    /// - **table rows** — eased background-color transition on hover
+    ///   (the consumer supplies the actual hover background via their
+    ///   own CSS; the motion class only smooths the change).
+    pub fn with_motion() -> Self {
+        Self {
+            pagination_button: "pagination-button trs-eased trs-pressable trs-focus-ring",
+            search_input: "search-input trs-eased trs-focus-ring",
+            row: "tr trs-eased",
+            loading_row: "loading-row trs-fade-in",
+            empty_row: "empty-row trs-fade-in",
+            ..Self::default()
+        }
+    }
+}
+
 /// Main props for the table component.
 #[derive(PartialEq, Props, Clone)]
 pub struct TableProps {

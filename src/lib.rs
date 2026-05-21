@@ -5,6 +5,13 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("../README.md")]
 
+/// Framework-agnostic motion + elevation primitives.
+///
+/// Always compiled; pair with the framework-specific `MotionPreamble`
+/// component in [`yew::motion`], [`dioxus::motion`], or `leptos::motion`
+/// to wire it into your app.
+pub mod motion;
+
 #[cfg(feature = "yew")]
 pub mod yew;
 
