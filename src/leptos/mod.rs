@@ -1,8 +1,13 @@
 //! Leptos backend for table-rs.
 //!
-//! Currently ships only the [`motion::MotionPreamble`] component — a
-//! Leptos `Table` scaffold is tracked under follow-up bead
-//! `table-rs-612`. Consumers hand-rolling a Leptos table on top of this
-//! crate's CSS classes can use the preamble today.
+//! Ships the [`motion::MotionPreamble`] component plus a full
+//! [`table::Table`] with search, sorting, and pagination — built on the
+//! framework-agnostic [`crate::core`], mirroring the Yew and Dioxus
+//! backends.
 
+pub mod body;
+pub mod controls;
+pub mod header;
 pub mod motion;
+pub mod table;
+pub mod types;
