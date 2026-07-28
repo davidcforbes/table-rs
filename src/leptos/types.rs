@@ -16,8 +16,28 @@ pub struct Column {
     pub header: &'static str,
     /// Whether the column is sortable (clickable header).
     pub sortable: bool,
-    /// Minimum width in pixels (kept for API parity with the other backends).
+    /// Minimum width in pixels. `0` means no minimum.
+    ///
+    /// APPLIED, as of the max-width work. It previously said "kept for API
+    /// parity with the other backends" and was read by nothing — a field that
+    /// looked like it did something and did not, which is worse than an absent
+    /// one because callers set it and believed it.
     pub min_width: u32,
+    /// Maximum width in pixels. `0` (the default) means no maximum.
+    ///
+    /// # What this is for
+    ///
+    /// In an auto-layout table the columns share the available width in
+    /// proportion to their content, so ONE long cell can starve every other
+    /// column — and a column whose content is short (a date, a status, a pair
+    /// of buttons) keeps being handed width it has no use for as the table
+    /// grows.
+    ///
+    /// A maximum lets such a column stop: it takes what it needs and returns
+    /// the rest. Combined with `min_width` it expresses "between this and
+    /// that", which is what a column actually wants, rather than a fixed
+    /// percentage that is wrong at every width except the one it was chosen at.
+    pub max_width: u32,
     /// Optional inline style for the header cell.
     pub style: Option<&'static str>,
     /// Optional extra class(es) for the header cell.
@@ -31,6 +51,9 @@ impl Default for Column {
             header: "",
             sortable: false,
             min_width: 100,
+            // No maximum by default: an existing table must lay out exactly as
+            // it did before this field existed.
+            max_width: 0,
             style: Some("padding: 8px; font-weight: 600; text-align: left;"),
             class: Some("table-header-cell"),
         }
